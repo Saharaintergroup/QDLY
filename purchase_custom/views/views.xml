@@ -1,0 +1,159 @@
+<odoo>
+
+    <record id="view_rfq_comparison_form" model="ir.ui.view">
+      <field name="name">RFQ Comparison</field>
+      <field name="model">purchase.order.line</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <label for="name"/>
+            <field name="name"/>
+            <group>
+              <group>
+                <field name="product_id"/>
+                <field name="product_uom"/>
+                <field name="product_qty"/>
+              </group>
+              <group>
+                <field name="partner_id"/>
+                <field name="price_unit"/>
+                <field name="price_subtotal"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_rfq_comparison_tree" model="ir.ui.view">
+      <field name="name">RFQ Comparison Tree</field>
+      <field name="model">purchase.order.line</field>
+      <field name="arch" type="xml">
+        <tree decoration-success="status == 'confirmed'" decoration-primary = "status=='added'" decoration-danger="status=='cancelled'">
+          <field name="status" invisible="1"/>
+          <field name="name"/>
+          <field name="partner_id"/>
+          <field name="product_id"/>
+          <field name="price_unit"/>
+          <field name="product_qty"/>
+          <field name="confirmed_qty"/>
+          <field name="product_uom"/>
+          <field name="price_subtotal"/>
+          <button name="reset" string="Reset" type="object" icon="fa-times" attrs="{'invisible':[('status','not in',['cancelled'])]}"/>
+          <button name="add" string="Add Quantities" type="object" icon="fa-shopping-cart" attrs="{'invisible':[('status','not in',[False,'draft'])]}"/>
+          <button name="confirm" confirm="Are You Sure You Want To Confirm This Quantity?" string="Confirm Quantities" type="object" attrs="{'invisible':[('status','!=','added')]}" icon="fa-check"/>
+          <button name="cancel" string="Cancell" type="object" attrs="{'invisible':[('status','not in',['added','confirmed'])]}" icon="fa-times"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_rfq_comparison_search" model="ir.ui.view">
+      <field name="name">RFQ Comparison Search</field>
+      <field name="model">purchase.order.line</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="product_id"/>
+          <field name="partner_id"/>
+          <filter name="group_product" string="Product" domain="[]" context="{'group_by':'product_id'}"/> 
+        </search>
+      </field>
+    </record>
+
+    <act_window name="RFQ Comparison" id="action_rfq_comparison" res_model="purchase.order.line" view_mode="tree,form" view_type="form" context="{'search_default_group_product':1}" domain="[('order_id.state','=','draft')]"/>
+
+    <menuitem name="RFQ Comparison" id="menu_rfq_comparison" action="action_rfq_comparison" parent="purchase.menu_procurement_management"/>
+
+    <record id="view_rfq_comparison_wizard_form" model="ir.ui.view">
+      <field name="name">RFQ Comparison Wizard</field>
+      <field name="model">rfq.comparison</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <field name="line_ids">
+              <tree decoration-success="status == 'confirmed'" decoration-primary = "status=='added'" decoration-danger="status=='cancelled'" editable="bottom">
+              <field name="status" invisible="1"/>
+              <field name="name"/>
+              <field name="partner_id"/>
+              <field name="product_id"/>
+              <field name="price_unit"/>
+              <field name="product_qty"/>
+              <field name="confirmed_qty"/>
+              <field name="product_uom"/>
+              <field name="price_subtotal_confirmed"/>
+              <button name="reset" string="Reset" type="object" icon="fa-times" attrs="{'invisible':[('status','not in',['cancelled'])]}"/>
+              <button name="add" string="Add Quantities" type="object" icon="fa-shopping-cart" attrs="{'invisible':[('status','not in',[False,'draft'])]}"/>
+              <button name="confirm" confirm="Are You Sure You Want To Confirm This Quantity?" string="Confirm Quantities" type="object" attrs="{'invisible':[('status','!=','added')]}" icon="fa-check"/>
+              <button name="cancel" string="Cancell" type="object" attrs="{'invisible':[('status','not in',['added','confirmed'])]}" icon="fa-times"/>
+            </tree>
+              
+            </field>
+          </sheet>
+          <footer>
+            <button name="update" string="Update" type="object" class="oe_highlight"/>
+            <button name="po_create" string="Create Purchase Order" type="object" class="oe_highlight"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+
+    <act_window id="action_rfq_comparison_wizard" name="RFQ Comparison" res_model="rfq.comparison" view_mode="form" key2="client_action_multi" src_model="purchase.order.line" target="new"/>
+
+
+    <record id="view_purchase_requisition_form_inherit" model="ir.ui.view">
+      <field name="name">Prchase Requisition Form Inherit</field>
+      <field name="model">purchase.requisition</field>
+      <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+      <field name="arch" type="xml">
+        <field name="vendor_id" position="after">
+          <field name="purchase_category_ids" widget="many2many_tags"/>
+        </field>
+        <xpath expr="//field[@name='line_ids']/tree/field[@name='product_id']" position="after">
+          <field name="name"/>
+        </xpath>
+      </field>
+    </record>
+
+
+
+    <record id="view_purchase_category_form" model="ir.ui.view">
+      <field name="name">Purchase Category Form</field>
+      <field name="model">purchase.category</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <label for="name"/>
+            <field name="name"/>
+            <group>
+              <group>
+                <field name="code"/>
+              </group>
+              <group>
+                <field name="product_category_ids" widget="many2many_tags"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <record id="view_purchase_category_tree" model="ir.ui.view">
+      <field name="name">Purchase Category Tree</field>
+      <field name="model">purchase.category</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="code"/>
+        </tree>
+      </field>
+    </record>
+
+
+
+
+
+    <act_window name="Purchase Categories" id="action_purchase_category" res_model="purchase.category" view_mode="tree,form" view_type="form"/>
+
+    <menuitem name="Purchase Categories" id="menu_purchase_category" action="action_purchase_category" parent="purchase.menu_procurement_management"/>
+</odoo>
