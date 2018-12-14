@@ -105,9 +105,18 @@
       <field name="model">purchase.requisition</field>
       <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
       <field name="arch" type="xml">
-        <field name="vendor_id" position="after">
+        <div class="oe_button_box" position="inside">
+          <button name="compare" string="Compare" type="object" class="oe_stat_button" icon="fa-list">
+            
+          </button>
+        </div>
+
+        <xpath expr="//field[@name='line_ids']/tree/field[@name='product_id']" position="before">
+          <field name="image" widget="image" class="oe_avatar"/>
+        </xpath>
+        <xpath expr="//field[@name='line_ids']/tree/field[@name='product_id']" position="after">
           <field name="purchase_category_ids" widget="many2many_tags"/>
-        </field>
+        </xpath>
         <xpath expr="//field[@name='line_ids']/tree/field[@name='product_id']" position="after">
           <field name="name"/>
         </xpath>
@@ -155,5 +164,5 @@
 
     <act_window name="Purchase Categories" id="action_purchase_category" res_model="purchase.category" view_mode="tree,form" view_type="form"/>
 
-    <menuitem name="Purchase Categories" id="menu_purchase_category" action="action_purchase_category" parent="purchase.menu_procurement_management"/>
+    <menuitem name="Purchase Categories" id="menu_purchase_category" action="action_purchase_category" parent="purchase.menu_purchase_config"/>
 </odoo>

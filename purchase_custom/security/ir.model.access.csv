@@ -1,2 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_purchase_agreement_custom_purchase_agreement_custom,purchase_agreement_custom.purchase_agreement_custom,model_purchase_agreement_custom_purchase_agreement_custom,,1,0,0,0
+access_purchase_category_all,purchase_category_all,model_purchase_category,,1,1,1,1
+access_rfq_comparison_all,rfq_comparison_all,model_rfq_comparison,,1,1,1,1
+access_agreement_wizard_all,agreement_wizard_all,model_agreement_wizard,,1,1,1,1

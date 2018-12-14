@@ -86,21 +86,32 @@ class PurchaseOrderLine(models.Model):
 
 
 
+class PurchaseRequisition(models.Model):
+	_inherit = 'purchase.requisition'
+
+	def compare(self):
+		view_id = self.env.ref('purchase_custom.view_rfq_comparison_tree')
+		domain = [('order_id.requisition_id','=',self.id),('order_id.state','=','draft')]
+		return {
+		'name':self.type_id and self.type_id.name or '/',
+		'type':'ir.actions.act_window',
+		'res_model':'purchase.order.line',
+		'view_id':view_id.id,
+		'view_mode':'tree',
+		'context':{'search_default_group_product':1},
+		'domain':domain
+		}
 class PurchaseRequisitionLine(models.Model):
 	_inherit = 'purchase.requisition.line'
 
 	name = fields.Char('Description')
+	purchase_category_ids = fields.Many2many('purchase.category',string="Purchase Categories")
+	image = fields.Binary(related="product_id.image_small",string="Image")
 
 	@api.onchange('product_id')
 	def onchange_product(self):
 		if self.product_id:
 			self.name = self.product_id.name
-
-class PurchaseRequisition(models.Model):
-	_inherit = 'purchase.requisition'
-
-	purchase_category_ids = fields.Many2many('purchase.category',string="Purchase Categories")
-
 
 
 class PurchaseCategory(models.Model):
@@ -112,21 +123,5 @@ class PurchaseCategory(models.Model):
 
 
 
-
-# class PurchaseOrder(models.Model):
-# 	_inherit = 'purchase.order'
-
-# 	@api.model
-# 	def create(self,vals):
-# 		if vals.get('requisition_id'):
-# 			if vals.get('order_line'):
-# 				for line in vals.get('order_line'):
-# 					self.env['rfq.comparison'].create({
-# 						'requisition_id':vals.get('requisition_id'),
-# 						'product_id':line[2].get('product_id'),
-# 						'vendor_id':vals.get('partner_id'),
-# 						'product_qty':line[2].get('product_qty'),
-# 						'price_unit':line[2].get('price_unit'),
-# 						'price_subtotal':line[2].get('price_unit')*line[2].get('product_qty')
-# 						})
-# 		return super(PurchaseOrder,self).create(vals)
+class AgreementWizard(models.Model):
+	_name = 'agreement.wizard'
