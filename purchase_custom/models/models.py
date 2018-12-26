@@ -4,6 +4,7 @@ from odoo import models, fields, api
 
 class RFQComparison(models.TransientModel):
 	_name='rfq.comparison'
+	_description = 'RFQ Comparison'
 
 	# product_id = fields.Many2one('product.product','Product')
 	# partner_id = fields.Many2one('res.partner','Vendor')
@@ -57,9 +58,9 @@ class RFQComparison(models.TransientModel):
 class PurchaseOrderLine(models.Model):
 	_inherit = 'purchase.order.line'
 
-	status = fields.Selection([('draft','Draft'),('added','Added'),('confirmed','Confimed'),('cancelled','Canceled')],default='draft')
+	status = fields.Selection([('draft','Draft'),('added','Added'),('confirmed','Confimed'),('cancelled','Canceled')],default='draft',string="State")
 	confirmed_qty = fields.Float()
-	price_subtotal_confirmed = fields.Float('Subtotal',compute='get_subtotal_price_confirmed')
+	price_subtotal_confirmed = fields.Float('Subtotal Price ',compute='get_subtotal_price_confirmed')
 
 	@api.depends('price_unit','confirmed_qty')
 	def get_subtotal_price_confirmed(self):
@@ -116,6 +117,7 @@ class PurchaseRequisitionLine(models.Model):
 
 class PurchaseCategory(models.Model):
 	_name = 'purchase.category'
+	_description = 'Purchase Category'
 
 	name = fields.Char('Name',required=True)
 	code = fields.Char('Code')
@@ -125,3 +127,4 @@ class PurchaseCategory(models.Model):
 
 class AgreementWizard(models.Model):
 	_name = 'agreement.wizard'
+	_description = 'Agreement Wizard'
